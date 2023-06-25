@@ -22,26 +22,26 @@
             <TextBlock Text="GitHub" FontSize="20" FontWeight="Bold" Margin="0,0,0,5"/>
             <TextBlock Padding="10,0,0,5">
                 <Run>PlayRandom is open source and available on</Run>
-                <ui:Hyperlink Content="GitHub" NavigateUri="{Binding GitHubUri}" Padding="5,0,0,0" Margin="0,0,0,-3"/>
+                <ui:Hyperlink Content="GitHub" NavigateUri="{Binding GitHubUri}" Padding="5,0,0,0" Margin="0,0,0,-5"/>
             </TextBlock>
             <TextBlock Padding="10,5,0,5">
                 <Run>You are running version</Run>
-                <ui:Hyperlink Content="{Binding Version}" NavigateUri="{Binding VersionUri}" Padding="5,0,0,0" Margin="0,0,0,-3"/>
+                <ui:Hyperlink Content="{Binding Version}" NavigateUri="{Binding VersionUri}" Padding="5,0,0,0" Margin="0,0,5,-3"/>
                 <Run>of PlayRandom</Run>
             </TextBlock>
 
             <TextBlock Text="Credits" FontSize="20" FontWeight="Bold" Margin="0,20,0,5"/>
             <TextBlock Padding="10,5,0,5">
                 <Run>Written in 24 hours by</Run>
-                <ui:Hyperlink Content="Neonalig" NavigateUri="https://linktr.ee/Neonalig" Padding="5,0,0,0" Margin="0,0,0,-3"/>
+                <ui:Hyperlink Content="Neonalig" NavigateUri="https://linktr.ee/Neonalig" Padding="5,0,0,0" Margin="0,0,0,-5"/>
             </TextBlock>
             <TextBlock Padding="10,5,0,5">
                 <Run>Fluent theming provided by</Run>
-                <ui:Hyperlink Content="WPF UI" NavigateUri="https://wpfui.lepo.co/index.html" Padding="5,0,0,0" Margin="0,0,0,-3"/>
+                <ui:Hyperlink Content="WPF UI" NavigateUri="https://wpfui.lepo.co/index.html" Padding="5,0,0,0" Margin="0,0,0,-5"/>
             </TextBlock>
             <TextBlock Padding="10,5,0,5">
                 <Run>Iconography courtesy of</Run>
-                <ui:Hyperlink Content="Microsoft" NavigateUri="https://github.com/microsoft/fluentui-system-icons" Padding="5,0,0,0" Margin="0,0,0,-3"/>
+                <ui:Hyperlink Content="Microsoft" NavigateUri="https://github.com/microsoft/fluentui-system-icons" Padding="5,0,0,0" Margin="0,0,0,-5"/>
             </TextBlock>
         </StackPanel>
         <Grid Grid.Row="1">
