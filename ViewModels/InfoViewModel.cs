@@ -71,11 +71,11 @@ public sealed class InfoViewModel : ViewModel {
             }
 
             // Find latest version (scanned is from ordered by version)
-            if (Scanned.Count > 0) {
-                ScannedRelease Latest = Scanned[^1];
-                if (Latest.Version > Version) {
-                    MainWindow.ShowUpdateAvailable(Latest);
-                }
+            ScannedRelease Latest;
+            if (Scanned.Count > 0 && (Latest = Scanned[^1]).Version != Version) {
+                MainWindow.ShowUpdateAvailable(Latest);
+            } else {
+                MainWindow.ShowUpdateAvailable(null);
             }
         } catch (Exception Ex) {
             MainWindow.HandleException(Ex);

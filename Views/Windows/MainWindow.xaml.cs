@@ -101,22 +101,20 @@ public partial class MainWindow {
         MBox.ShowDialog();
     }
 
-    /// <summary> Shows a message box stating that an update is available. </summary>
-    /// <param name="Release"> The release. </param>
-    public static void ShowUpdateAvailable( ScannedRelease Release ) {
-        void Callback() {
+    /// <summary> Shows a message box stating that an update is or isn't available. </summary>
+    /// <param name="Release"> The release, or <see langword="null"/> if no update is available. </param>
+    public static void ShowUpdateAvailable( ScannedRelease? Release ) {
+        void Callback_Available() {
             MessageBox MBox = new() {
                 ButtonLeftName        = "Yes",
                 ButtonLeftAppearance  = ControlAppearance.Primary,
                 ButtonRightName       = "No",
                 ButtonRightAppearance = ControlAppearance.Secondary,
-                Content               = $"A new version of PlayRandom is available ({Release.Version}). Do you want to download it?",
+                Content               = $"A new version of PlayRandom is available ({Release.Value.Version}). Do you want to download it?",
                 Title                 = "Update Available",
             };
             MBox.ButtonLeftClick += ( _, _ ) => {
-                Process.Start(new ProcessStartInfo(Release.DownloadUri.ToString()) {
-                    UseShellExecute = true
-                });
+                Release.Value.DownloadUri.OpenUrl();
                 MBox.Close();
             };
             MBox.ButtonRightClick += ( _, _ ) => {
@@ -124,6 +122,17 @@ public partial class MainWindow {
             };
             MBox.ShowDialog();
         }
-        Application.Current.Dispatcher.Invoke(Callback);
+        void Callback_NotAvailable() {
+            MessageBox MBox = new() {
+                ButtonLeftName        = "OK",
+                ButtonLeftAppearance  = ControlAppearance.Primary,
+                Content               = "You are running the latest version of PlayRandom.",
+                Title                 = "No Update Available",
+            };
+            MBox.ButtonLeftClick += ( _, _ ) => MBox.Close();
+            MBox.ButtonRightClick += ( _, _ ) => MBox.Close();
+            MBox.ShowDialog();
+        }
+        Application.Current.Dispatcher.Invoke(Release is not null ? Callback_Available : Callback_NotAvailable);
     }
 }
