@@ -74,7 +74,7 @@
             <ui:Button Grid.Column="5" HorizontalAlignment="Stretch" Command="{Binding BuyMeACoffeeCommand}">
                 <StackPanel Orientation="Vertical">
                     <ui:SymbolIcon Symbol="DrinkCoffee24"/>
-                    <TextBlock Text="Buy me a coffee"/>
+                    <TextBlock Text="Buy me a Cuppa"/>
                 </StackPanel>
             </ui:Button>
         </Grid>

@@ -14,7 +14,7 @@
     WindowStartupLocation="CenterScreen"
     Icon="{StaticResource IconDrawingImage}"
     Closing="MainWindow_OnClosing"
-    Title="Play Random">
+    Title="PlayRandom">
     <ui:UiWindow.DataContext>
         <viewModels:MainViewModel/>
     </ui:UiWindow.DataContext>
