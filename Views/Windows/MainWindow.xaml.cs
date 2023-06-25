@@ -1,6 +1,4 @@
-﻿// #define FRAME_LOG
-
-using PlayRandom.Models;
+﻿using PlayRandom.Models;
 using PlayRandom.ViewModels;
 
 namespace PlayRandom.Views.Windows;
@@ -26,12 +24,6 @@ public partial class MainWindow {
                 true                 // Whether to change accents automatically
             );
         }
-
-        // Detect UI thread hangs (in background thread)
-        #if DEBUG
-        UIThreadHangDetector.Start();
-        Application.Current.Exit += ( _, _ ) => UIThreadHangDetector.Stop();
-        #endif
     }
 
     void MainWindow_OnClosing( object? Sender, CancelEventArgs E ) {
@@ -109,6 +101,8 @@ public partial class MainWindow {
         MBox.ShowDialog();
     }
 
+    /// <summary> Shows a message box stating that an update is available. </summary>
+    /// <param name="Release"> The release. </param>
     public static void ShowUpdateAvailable( ScannedRelease Release ) {
         void Callback() {
             MessageBox MBox = new() {
@@ -132,74 +126,4 @@ public partial class MainWindow {
         }
         Application.Current.Dispatcher.Invoke(Callback);
     }
-
-    #if DEBUG
-    static class UIThreadHangDetector {
-        static readonly CancellationTokenSource _CTS = new();
-        static readonly SynchronizationContext  _Context;
-
-        static UIThreadHangDetector() {
-            #if !DEBUG
-            throw new InvalidOperationException("This method should only be called in debug mode");
-            #endif
-
-            // Getting the synchronisation context of the UI thread
-            _Context = SynchronizationContext.Current ?? throw new InvalidOperationException("No synchronisation context");
-            Task.Run(Poll, _CTS.Token);
-        }
-
-        /// <summary> Starts the UI thread hang detector. </summary>
-        public static void Start() => _CTS.Token.ThrowIfCancellationRequested();
-
-        /// <summary> Stops the UI thread hang detector. </summary>
-        public static void Stop() => _CTS.Cancel();
-
-        static async Task Poll() {
-            // const float DesiredFrameRate = 60; // Desired frame rate for debug mode
-            // TimeSpan Timeout = TimeSpan.FromMilliseconds(1000 / DesiredFrameRate);
-            TimeSpan Timeout = TimeSpan.FromSeconds(1);
-
-            Stopwatch Stopwatch = new();
-            for (;;) {
-                if (_CTS.IsCancellationRequested) {
-                    // Debug.WriteLine("UI thread hang detector stopped.");
-                    return;
-                }
-
-                TaskCompletionSource TCS = new();
-
-                _Context.Post(SendOrPostCallback, null);
-                void SendOrPostCallback( object? State ) {
-                    try {
-                        // Schedule a no-op on the UI thread
-                        TCS.SetResult();
-                    } catch (Exception E) {
-                        TCS.SetException(E);
-                    }
-                }
-
-                Stopwatch.Restart();
-                await TCS.Task;
-
-                // Print the elapsed time for each frame
-                #if FRAME_LOG
-                long Ms = Stopwatch.ElapsedMilliseconds;
-                Debug.WriteLine(
-                    Ms > 0
-                        ? $"UI responded in {Stopwatch.ElapsedMilliseconds}ms"
-                        : $"UI responded in <1ms ({Stopwatch.ElapsedTicks} ticks)"
-                );
-                #endif
-
-                if (Stopwatch.Elapsed > Timeout) {
-                    // UI thread did not respond within timeout, consider this a hang
-                    Debug.WriteLine("UI thread hang detected.");
-                }
-
-                await Task.Delay(Timeout); // Check every 'timeout' period
-            }
-            // ReSharper disable once FunctionNeverReturns
-        }
-    }
-    #endif
 }
