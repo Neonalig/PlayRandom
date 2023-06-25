@@ -37,12 +37,19 @@ public partial class FolderPicker {
         set => SetValue(TitleProperty, value);
     }
 
+    static string WithSeparator( string Path ) {
+        if (string.IsNullOrEmpty(Path)) {
+            return Path;
+        }
+        return Path[^1] == System.IO.Path.DirectorySeparatorChar ? Path : $"{Path}{System.IO.Path.DirectorySeparatorChar}";
+    }
+
     /// <summary> Browses for a folder. </summary>
     void Browse() {
         VistaFolderBrowserDialog Dialog = new() {
-            Description = Title,
+            Description            = Title,
             UseDescriptionForTitle = true,
-            SelectedPath = string.IsNullOrEmpty(SelectedPath) ? Environment.CurrentDirectory : SelectedPath
+            SelectedPath           = string.IsNullOrEmpty(SelectedPath) ? Environment.CurrentDirectory : WithSeparator(SelectedPath)
         };
         if (Dialog.ShowDialog() == true) {
             SelectedPath = Dialog.SelectedPath;
