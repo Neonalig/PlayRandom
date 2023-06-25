@@ -1,0 +1,39 @@
+﻿<UserControl x:Class="PlayRandom.Controls.ExecutableLauncherEditor"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+             xmlns:local="clr-namespace:PlayRandom.Controls"
+             d:DataContext="{d:DesignInstance local:ExecutableLauncherEditor, IsDesignTimeCreatable=False}"
+             mc:Ignorable="d"
+             d:DesignHeight="100" d:DesignWidth="300">
+    <UserControl.Resources>
+        <TextBlock x:Key="ExecutableTooltip">
+            The executable to launch
+        </TextBlock>
+        <TextBlock x:Key="ArgumentsTooltip">
+            The arguments to pass to the executable <LineBreak/><LineBreak/>
+            {0} will be replaced with the path to the file,<LineBreak/>
+            {1} will be replaced with the file name,<LineBreak/>
+            {2} will be replaced with the parent directory
+        </TextBlock>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="{Binding LabelWidth, Mode=OneWay}"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" MaxHeight="50"/>
+            <RowDefinition Height="*" MaxHeight="50"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Column="0" Grid.Row="0" Text="Executable" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,0,5,0" ToolTip="{StaticResource ExecutableTooltip}"/>
+        <local:FilePicker Grid.Column="1" Grid.Row="0" SelectedPath="{Binding DataContext.FilePath, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" ToolTip="{StaticResource ExecutableTooltip}" Filter="Executable Files|*.exe|All Files|*.*"/>
+
+        <TextBlock Grid.Column="0" Grid.Row="1" Text="Arguments" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,0,5,0" ToolTip="{StaticResource ArgumentsTooltip}"/>
+        <ui:TextBox Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" Text="{Binding DataContext.Arguments, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" ToolTip="{StaticResource ArgumentsTooltip}"/>
+    </Grid>
+</UserControl>

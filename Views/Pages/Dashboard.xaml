@@ -1,0 +1,109 @@
+﻿<ui:UiPage x:Class="PlayRandom.Views.Pages.Dashboard"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      xmlns:viewModels="clr-namespace:PlayRandom.ViewModels"
+      xmlns:controls="clr-namespace:PlayRandom.Controls"
+      xmlns:converters="clr-namespace:PlayRandom.Converters"
+      mc:Ignorable="d"
+      Title="Dashboard" Height="450" Width="800">
+    <ui:UiPage.DataContext>
+        <viewModels:DashboardViewModel/>
+    </ui:UiPage.DataContext>
+    <ui:UiPage.Resources>
+        <converters:BooleanToVisibilityConverter x:Key="BoolToVisConv" True="Visible" False="Collapsed"/>
+        <converters:BooleanToVisibilityConverter x:Key="InvBoolToVisConv" True="Collapsed" False="Visible"/>
+        <converters:UniqueStringToBooleanConverter x:Key="UniqueStrConv"/>
+    </ui:UiPage.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <controls:PrefixLabel Grid.Row="0" Margin="5" Text="Search Path">
+            <controls:FolderPicker SelectedPath="{Binding DataContext.SearchPath, Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type ui:UiPage}}}"/>
+        </controls:PrefixLabel>
+
+        <Grid Grid.Row="1">
+            <ui:VirtualizingGridView ItemsSource="{Binding DataContext.PlaybackOptions, Mode=OneWay, RelativeSource={RelativeSource AncestorType={x:Type ui:UiPage}}}" Visibility="{Binding DataContext.IsLoading, Converter={StaticResource InvBoolToVisConv}, Mode=OneWay, RelativeSource={RelativeSource AncestorType={x:Type ui:UiPage}}}" Orientation="Vertical" SelectionMode="Single" SelectionChanged="Selector_OnSelectionChanged">
+                <ui:VirtualizingGridView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                        <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ListViewItem">
+                                    <ContentPresenter/>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ui:VirtualizingGridView.ItemContainerStyle>
+                <ui:VirtualizingGridView.ItemTemplate>
+                    <DataTemplate>
+                        <ui:CardAction Margin="0,0,5,5" Click="PlaybackOption_OnClick">
+                            <StackPanel Orientation="Vertical">
+                                <TextBlock Text="{Binding Name}"/>
+                                <TextBlock Text="{Binding Parent.Name}" Opacity="0.5">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                            <Style.Triggers>
+                                                <DataTrigger Value="False">
+                                                    <DataTrigger.Binding>
+                                                        <MultiBinding Converter="{StaticResource UniqueStrConv}">
+                                                            <Binding Path="Name" />
+                                                            <Binding Path="Parent.Name" />
+                                                        </MultiBinding>
+                                                    </DataTrigger.Binding>
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </StackPanel>
+                        </ui:CardAction>
+                    </DataTemplate>
+                </ui:VirtualizingGridView.ItemTemplate>
+                <ui:VirtualizingGridView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <VirtualizingStackPanel Orientation="Vertical"/>
+                    </ItemsPanelTemplate>
+                </ui:VirtualizingGridView.ItemsPanel>
+            </ui:VirtualizingGridView>
+            <Border Background="#00000028" Visibility="{Binding DataContext.IsLoading, Converter={StaticResource BoolToVisConv}, Mode=OneWay, RelativeSource={RelativeSource AncestorType={x:Type ui:UiPage}}}">
+                <StackPanel Orientation="Vertical" VerticalAlignment="Center" MaxWidth="400">
+                    <TextBlock HorizontalAlignment="Center" TextAlignment="Center">
+                        <Run Text="Loading..."/>
+                        <LineBreak/>
+                        <Run Text="{Binding DataContext.FoundFiles, Mode=OneWay, StringFormat='Found {0:N0} files...', RelativeSource={RelativeSource AncestorType={x:Type ui:UiPage}}}"/>
+                    </TextBlock>
+                    <ui:ProgressRing IsIndeterminate="True"/>
+                </StackPanel>
+            </Border> <!-- See also: https://wpfui.lepo.co/documentation/Wpf.Ui.Controls.LoadingScreen.html -->
+        </Grid>
+
+        <UniformGrid Grid.Row="2" Columns="2" Margin="0,10,0,0">
+            <ui:Button HorizontalAlignment="Stretch" Margin="0,0,5,0" Command="{Binding DataContext.ShuffleCommand, RelativeSource={RelativeSource AncestorType={x:Type ui:UiPage}}}">
+                <ui:Button.Content>
+                    <StackPanel Orientation="Vertical">
+                        <ui:SymbolIcon Symbol="ArrowShuffle24"/>
+                        <TextBlock Text="Shuffle" HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </ui:Button.Content>
+            </ui:Button>
+            <ui:Button HorizontalAlignment="Stretch" Margin="5,0,0,0" Command="{Binding DataContext.PlayFirstCommand, RelativeSource={RelativeSource AncestorType={x:Type ui:UiPage}}}">
+                <ui:Button.Content>
+                    <StackPanel Orientation="Vertical">
+                        <ui:SymbolIcon Symbol="Play24"/>
+                        <TextBlock Text="Play" HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </ui:Button.Content>
+            </ui:Button>
+        </UniformGrid>
+    </Grid>
+</ui:UiPage>

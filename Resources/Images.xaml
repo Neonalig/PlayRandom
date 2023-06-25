@@ -1,0 +1,7 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <Geometry x:Key="IconGeometry">F1 M24,24z M0,0z M5,4.25A2.25,2.25,0,0,1,7.25,2L15.75,2A2.25,2.25,0,0,1,18,4.25L18,12 21.5,12 21.5,15.25A3.25,3.25,0,0,1,18.25,18.5L12.924,18.5C12.974,18.174,13,17.84,13,17.5A6.472,6.472,0,0,0,12.268,14.5L14.25,14.5A0.75,0.75,0,0,0,14.25,13L11.19,13A6.48,6.48,0,0,0,6.5,11A6.52,6.52,0,0,0,5,11.174L5,4.25z M18,17L18.25,17A1.75,1.75,0,0,0,20,15.25L20,13.5 18,13.5 18,17z M8.75,6A0.75,0.75,0,0,0,8.75,7.5L14.25,7.5A0.75,0.75,0,0,0,14.25,6L8.75,6z M8.75,9.5A0.75,0.75,0,0,0,8.75,11L14.25,11A0.75,0.75,0,0,0,14.25,9.5L8.75,9.5z M6.5,12A5.5,5.5,0,1,1,6.5,23A5.5,5.5,0,0,1,6.5,12z M5,14.96L5,20.04A0.5,0.5,0,0,0,5.787,20.45L9.415,17.91A0.5,0.5,0,0,0,9.415,17.09L5.787,14.55A0.5,0.5,0,0,0,5,14.96z</Geometry>
+  <DrawingGroup x:Key="IconDrawingGroup" ClipGeometry="M0,0 V24 H24 V0 H0 Z">
+    <GeometryDrawing Brush="#FFFFFFFF" Geometry="{StaticResource IconGeometry}" />
+  </DrawingGroup>
+  <DrawingImage x:Key="IconDrawingImage" Drawing="{StaticResource IconDrawingGroup}" />
+</ResourceDictionary>

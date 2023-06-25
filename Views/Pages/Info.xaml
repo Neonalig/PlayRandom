@@ -1,0 +1,84 @@
+﻿<ui:UiPage x:Class="PlayRandom.Views.Pages.Info"
+           xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+           xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+           xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+           xmlns:viewModels="clr-namespace:PlayRandom.ViewModels"
+           mc:Ignorable="d"
+           Title="Info" Height="450" Width="800">
+    <ui:UiPage.DataContext>
+        <viewModels:InfoViewModel/>
+    </ui:UiPage.DataContext>
+    <ui:UiPage.Resources>
+        <GridLength x:Key="ButtonWidth">140</GridLength>
+    </ui:UiPage.Resources>
+    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" Orientation="Vertical">
+            <TextBlock Text="GitHub" FontSize="20" FontWeight="Bold" Margin="0,0,0,5"/>
+            <TextBlock Padding="10,0,0,5">
+                <Run>PlayRandom is open source and available on</Run>
+                <ui:Hyperlink Content="GitHub" NavigateUri="{Binding GitHubUri}" Padding="5,0,0,0" Margin="0,0,0,-3"/>
+            </TextBlock>
+            <TextBlock Padding="10,5,0,5">
+                <Run>You are running version</Run>
+                <ui:Hyperlink Content="{Binding Version}" NavigateUri="{Binding VersionUri}" Padding="5,0,0,0" Margin="0,0,0,-3"/>
+                <Run>of PlayRandom, on the</Run>
+                <ui:Hyperlink Content="{Binding Branch}" NavigateUri="{Binding BranchUri}" Padding="5,0,0,0" Margin="0,0,0,-3"/>
+                <Run>branch.</Run>
+            </TextBlock>
+
+            <TextBlock Text="Credits" FontSize="20" FontWeight="Bold" Margin="0,20,0,5"/>
+            <TextBlock Padding="10,5,0,5">
+                <Run>Written in 24 hours by</Run>
+                <ui:Hyperlink Content="Neonalig" NavigateUri="https://linktr.ee/Neonalig" Padding="5,0,0,0" Margin="0,0,0,-3"/>
+            </TextBlock>
+            <TextBlock Padding="10,5,0,5">
+                <Run>Fluent theming provided by</Run>
+                <ui:Hyperlink Content="WPF UI" NavigateUri="https://wpfui.lepo.co/index.html" Padding="5,0,0,0" Margin="0,0,0,-3"/>
+            </TextBlock>
+            <TextBlock Padding="10,5,0,5">
+                <Run>Iconography courtesy of</Run>
+                <ui:Hyperlink Content="Microsoft" NavigateUri="https://github.com/microsoft/fluentui-system-icons" Padding="5,0,0,0" Margin="0,0,0,-3"/>
+            </TextBlock>
+        </StackPanel>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="{StaticResource ButtonWidth}"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="{StaticResource ButtonWidth}"/>
+                <ColumnDefinition Width="{StaticResource ButtonWidth}"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="{StaticResource ButtonWidth}"/>
+            </Grid.ColumnDefinitions>
+            <ui:Button Grid.Column="0" HorizontalAlignment="Stretch" Command="{Binding MoreCommand}">
+                <StackPanel Orientation="Vertical">
+                    <ui:SymbolIcon Symbol="MoreCircle32"/>
+                    <TextBlock Text="More by Neonalig"/>
+                </StackPanel>
+            </ui:Button>
+            <ui:Button Grid.Column="2" HorizontalAlignment="Stretch" Margin="0,0,5,0" Command="{Binding OpenGitHubCommand}">
+                <StackPanel Orientation="Vertical">
+                    <ui:SymbolIcon Symbol="WebAsset24"/>
+                    <TextBlock Text="Source Code"/>
+                </StackPanel>
+            </ui:Button>
+            <ui:Button Grid.Column="3" HorizontalAlignment="Stretch" Command="{Binding CheckForUpdatesCommand}">
+                <StackPanel Orientation="Vertical">
+                    <ui:SymbolIcon Symbol="ArrowDownload24"/>
+                    <TextBlock Text="Check for Updates"/>
+                </StackPanel>
+            </ui:Button>
+            <ui:Button Grid.Column="5" HorizontalAlignment="Stretch" Command="{Binding BuyMeACoffeeCommand}">
+                <StackPanel Orientation="Vertical">
+                    <ui:SymbolIcon Symbol="DrinkCoffee24"/>
+                    <TextBlock Text="Buy me a coffee"/>
+                </StackPanel>
+            </ui:Button>
+        </Grid>
+    </Grid>
+</ui:UiPage>

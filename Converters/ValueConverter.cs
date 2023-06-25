@@ -1,0 +1,45 @@
+﻿using System.Globalization;
+
+namespace PlayRandom.Converters;
+
+public abstract class ValueConverter<TIn, TOut> : DependencyObject, INotifyPropertyChanged, IValueConverter {
+
+    /// <inheritdoc cref="IValueConverter.Convert"/>
+    protected abstract TOut Convert( TIn Value, object? Parameter, CultureInfo Culture );
+
+    /// <inheritdoc cref="IValueConverter.ConvertBack"/>
+    protected virtual TIn ConvertBack( TOut Value, object? Parameter, CultureInfo Culture ) => throw new NotSupportedException();
+
+    #region Implementation of IValueConverter
+
+    /// <inheritdoc />
+    public object? Convert( object Value, Type TargetType, object? Parameter, CultureInfo Culture ) => Value is TIn In ? Convert(In, Parameter, Culture) : throw new ArgumentException($"Value must be of type {typeof(TIn)}", nameof(Value));
+
+    /// <inheritdoc />
+    public object? ConvertBack( object Value, Type TargetType, object? Parameter, CultureInfo Culture ) => Value is TOut Out ? ConvertBack(Out, Parameter, Culture) : throw new ArgumentException($"Value must be of type {typeof(TOut)}", nameof(Value));
+
+    #endregion
+
+    /// <inheritdoc />
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    /// <summary> Raises the <see cref="PropertyChanged"/> event. </summary>
+    /// <param name="PropertyName"> The name of the property that changed. </param>
+    protected virtual void OnPropertyChanged( [CallerMemberName] string? PropertyName = null ) => PropertyChanged?.Invoke(this, new(PropertyName));
+
+    /// <summary> Sets the field and raises the <see cref="PropertyChanged"/> event if the value changed. </summary>
+    /// <param name="Field"> The field to set. </param>
+    /// <param name="Value"> The value to set the field to. </param>
+    /// <param name="PropertyName"> The name of the property that changed. </param>
+    /// <typeparam name="T"> The type of the field. </typeparam>
+    /// <returns> <see langword="true"/> if the value changed; otherwise, <see langword="false"/>. </returns>
+    protected bool SetField<T>( ref T Field, T Value, [CallerMemberName] string? PropertyName = null ) {
+        if (EqualityComparer<T>.Default.Equals(Field, Value)) {
+            return false;
+        }
+
+        Field = Value;
+        OnPropertyChanged(PropertyName);
+        return true;
+    }
+}
