@@ -12,12 +12,6 @@ public sealed class InfoViewModel : ViewModel {
     /// <summary> The url to the currently installed GitHub release. </summary>
     public Uri VersionUri { get; private set; } = EmptyUri;
 
-    /// <summary> The branch of the currently installed GitHub release. </summary>
-    public string Branch { get; private set; } = string.Empty;
-
-    /// <summary> The url to the currently installed GitHub release's branch. </summary>
-    public Uri BranchUri { get; private set; } = EmptyUri;
-
     /// <summary> The 'More by Neonalig' command. </summary>
     public ICommand MoreCommand { get; }
 
@@ -60,15 +54,10 @@ public sealed class InfoViewModel : ViewModel {
             IReadOnlyList<ScannedRelease> Scanned  = ScannedRelease.Scan(Releases);
 
             // Find current version
-            if (Scanned.TryFind(Version, out ScannedRelease Current)) {
-                VersionUri = Current.Uri;
-                Branch     = Current.Branch;
-                BranchUri  = Current.BranchUri;
-            } else {
-                VersionUri = EmptyUri;
-                Branch     = string.Empty;
-                BranchUri  = EmptyUri;
-            }
+            VersionUri =
+                Scanned.TryFind(Version, out ScannedRelease Current)
+                    ? Current.Uri
+                    : EmptyUri;
 
             // Find latest version (scanned is from ordered by version)
             ScannedRelease Latest;

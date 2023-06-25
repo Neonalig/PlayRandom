@@ -15,12 +15,6 @@ public readonly struct ScannedRelease : IComparable<ScannedRelease>, IComparable
     /// <summary> The url to the <see cref="Release"/>. </summary>
     public Uri Uri => new(Release.HtmlUrl);
 
-    /// <summary> The branch of the <see cref="Release"/>. </summary>
-    public string Branch => Release.TargetCommitish;
-
-    /// <summary> The url to the <see cref="Release"/>'s branch. </summary>
-    public Uri BranchUri => new(Uri, "/tree/" + Branch);
-
     /// <summary> The url to the <see cref="Release"/>'s download. </summary>
     public Uri DownloadUri => new(Release.Assets[0].BrowserDownloadUrl);
 

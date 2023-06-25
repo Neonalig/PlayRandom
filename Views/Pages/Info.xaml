@@ -27,9 +27,7 @@
             <TextBlock Padding="10,5,0,5">
                 <Run>You are running version</Run>
                 <ui:Hyperlink Content="{Binding Version}" NavigateUri="{Binding VersionUri}" Padding="5,0,0,0" Margin="0,0,0,-3"/>
-                <Run>of PlayRandom, on the</Run>
-                <ui:Hyperlink Content="{Binding Branch}" NavigateUri="{Binding BranchUri}" Padding="5,0,0,0" Margin="0,0,0,-3"/>
-                <Run>branch.</Run>
+                <Run>of PlayRandom</Run>
             </TextBlock>
 
             <TextBlock Text="Credits" FontSize="20" FontWeight="Bold" Margin="0,20,0,5"/>

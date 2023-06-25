@@ -9,12 +9,6 @@ public partial class MainWindow {
     public MainWindow() {
         InitializeComponent();
 
-        // Create instances of the model and view model
-        MainViewModel ViewModel = new();
-
-        // Set the view model as the data context
-        DataContext = ViewModel;
-
         // Listen for operating system theme changes
         Loaded += OnLoaded;
         void OnLoaded( object? Sender, RoutedEventArgs E ) {
@@ -110,7 +104,7 @@ public partial class MainWindow {
                 ButtonLeftAppearance  = ControlAppearance.Primary,
                 ButtonRightName       = "No",
                 ButtonRightAppearance = ControlAppearance.Secondary,
-                Content               = $"A new version of PlayRandom is available ({Release.Value.Version}). Do you want to download it?",
+                Content               = $"A new version of {nameof(PlayRandom)} is available ({Release.Value.Version}).\nDo you want to download it?",
                 Title                 = "Update Available",
             };
             MBox.ButtonLeftClick += ( _, _ ) => {
@@ -126,7 +120,7 @@ public partial class MainWindow {
             MessageBox MBox = new() {
                 ButtonLeftName        = "OK",
                 ButtonLeftAppearance  = ControlAppearance.Primary,
-                Content               = "You are running the latest version of PlayRandom.",
+                Content               = "You are running the latest version of " + nameof(PlayRandom) + ".",
                 Title                 = "No Update Available",
             };
             MBox.ButtonLeftClick += ( _, _ ) => MBox.Close();

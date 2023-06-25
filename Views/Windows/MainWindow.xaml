@@ -4,7 +4,6 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewModels="clr-namespace:PlayRandom.ViewModels"
-    d:DataContext="{d:DesignInstance viewModels:MainViewModel, IsDesignTimeCreatable=True}"
     mc:Ignorable="d"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     xmlns:pages="clr-namespace:PlayRandom.Views.Pages"
@@ -16,6 +15,9 @@
     Icon="{StaticResource IconDrawingImage}"
     Closing="MainWindow_OnClosing"
     Title="Play Random">
+    <ui:UiWindow.DataContext>
+        <viewModels:MainViewModel/>
+    </ui:UiWindow.DataContext>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
