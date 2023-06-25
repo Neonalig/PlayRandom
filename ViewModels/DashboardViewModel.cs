@@ -1,4 +1,5 @@
-﻿using PlayRandom.Services;
+﻿using System.Collections.Specialized;
+using PlayRandom.Services;
 using PlayRandom.Views.Windows;
 
 namespace PlayRandom.ViewModels;
@@ -50,7 +51,10 @@ public sealed class DashboardViewModel : ViewModel {
         void Shuffle() {
             PlaybackOptions.Shuffle();
         }
-        bool CanShuffle() => PlaybackOptions.Count > 1;
+        bool CanShuffle() {
+            Debug.WriteLine($"CanShuffle: {(PlaybackOptions.Count > 1)}");
+            return PlaybackOptions.Count > 1;
+        }
 
         // If there is a search path in the command line arguments, use that. Otherwise, use the last search path.
         SearchPath = Environment.GetCommandLineArgs().Skip(1).FirstOrDefault() ?? Settings.LastSearchPath;
@@ -81,17 +85,16 @@ public sealed class DashboardViewModel : ViewModel {
                     VM.LoadPlaybackOptionsAsync().Forget();
                     break;
                 }
-                case nameof(PlaybackOptions): {
-                    ((RelayCommand)VM.ShuffleCommand).NotifyCanExecuteChanged();
-                    ((RelayCommand)VM.PlayFirstCommand).NotifyCanExecuteChanged();
-                    break;
-                }
             }
         }
-        PlaybackOptions.CollectionChanged += (_,_) => {
+
+        void OnPlaybackOptionsOnCollectionChanged( object? Sender, NotifyCollectionChangedEventArgs Args ) {
             FoundFiles = PlaybackOptions.Count;
             OnPropertyChanged(nameof(PlaybackOptions));
-        };
+            ((RelayCommand)ShuffleCommand).NotifyCanExecuteChanged();
+            ((RelayCommand)PlayFirstCommand).NotifyCanExecuteChanged();
+        }
+        PlaybackOptions.CollectionChanged += OnPlaybackOptionsOnCollectionChanged;
     }
 
     /// <summary> Current number found files. </summary>
