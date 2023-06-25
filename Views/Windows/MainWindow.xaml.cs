@@ -20,10 +20,10 @@ public partial class MainWindow {
         // Listen for operating system theme changes
         Loaded += OnLoaded;
         void OnLoaded( object? Sender, RoutedEventArgs E ) {
-            Wpf.Ui.Appearance.Watcher.Watch(
-                this,                                  // Window class
-                Wpf.Ui.Appearance.BackgroundType.Mica, // Background type
-                true                                   // Whether to change accents automatically
+            Watcher.Watch(
+                this,                // Window class
+                BackgroundType.Mica, // Background type
+                true                 // Whether to change accents automatically
             );
         }
 
@@ -56,64 +56,62 @@ public partial class MainWindow {
     }
 
     /// <summary> Catches an exception and displays it in a message box. </summary>
-    /// <param name="Owner"> The owner window. If an exception occurs, the exception will be displayed in a message box with this window as its parent. </param>
     /// <param name="Exception"> The exception. </param>
-    public static void HandleException( Window? Owner, AggregateException Exception ) {
-        if (Debugger.IsAttached) {
-            Trace.TraceError(Exception.ToString());
-        }
-
-        StringBuilder Message = new();
-        foreach (Exception InnerException in Exception.InnerExceptions) {
-            Message.AppendLine(InnerException.Message);
-        }
-
-        if (Owner is not null) {
-            WindowsMessageBox.Show(Owner, Message.ToString(), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-        } else{
-            WindowsMessageBox.Show(Message.ToString(), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-        }
-    }
-
-
-    /// <summary> Catches an exception and displays it in a message box. </summary>
-    /// <param name="Owner"> The owner window. If an exception occurs, the exception will be displayed in a message box with this window as its parent. </param>
-    /// <param name="Exception"> The exception. </param>
-    public static void HandleException( Window? Owner, Exception Exception ) {
-        if (Debugger.IsAttached) {
-            Trace.TraceError(Exception.ToString());
-        }
-
-        StringBuilder Message = new();
-        Message.AppendLine(Exception.Message);
-        Exception? InnerException = Exception.InnerException;
-        while (InnerException is not null) {
-            Message.AppendLine(InnerException.Message);
-            InnerException = InnerException.InnerException;
-        }
-
-        if (Owner is not null) {
-            WindowsMessageBox.Show(Owner, Message.ToString(), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-        } else{
-            WindowsMessageBox.Show(Message.ToString(), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-        }
-    }
-
-    /// <inheritdoc cref="HandleException(Window?,AggregateException)"/>
-    public static void HandleException( AggregateException Exception ) {
-        void Callback() => HandleException(Application.Current.MainWindow, Exception);
-        Application.Current.Dispatcher.Invoke(Callback);
-    }
-
-    /// <inheritdoc cref="HandleException(Window?,AggregateException)"/>
     public static void HandleException( Exception Exception ) {
-        void Callback() => HandleException(Application.Current.MainWindow, Exception);
-        Application.Current.Dispatcher.Invoke(Callback);
+        static void GetExceptionMessage( StringBuilder Builder, Exception Exception ) {
+            Builder.AppendLine(Exception.Message);
+            Exception? InnerException = Exception.InnerException;
+            while (InnerException != null) {
+                Builder.AppendLine(InnerException.Message);
+                InnerException = InnerException.InnerException;
+            }
+        }
+        HandleException(Exception, GetExceptionMessage);
+    }
+
+    /// <inheritdoc cref="HandleException(Exception)"/>
+    public static void HandleException( AggregateException Exception ) {
+        static void GetExceptionMessage( StringBuilder Builder, AggregateException Exception ) {
+            foreach (Exception InnerException in Exception.InnerExceptions) {
+                Builder.AppendLine(InnerException.Message);
+            }
+        }
+        HandleException(Exception, GetExceptionMessage);
+    }
+
+    static void HandleException<TException>( TException Exception, Action<StringBuilder, TException> AppendExceptionMessage ) where TException : Exception {
+        if (Debugger.IsAttached) {
+            Trace.TraceError(Exception.ToString());
+        }
+        StringBuilder Message = new();
+        AppendExceptionMessage(Message, Exception);
+        ShowExceptionMessage(Message.ToString(), Exception.ToString());
+    }
+
+    static void ShowExceptionMessage( string Message, string Details ) {
+        MessageBox MBox = new() {
+            ButtonLeftName        = "OK",
+            ButtonLeftAppearance  = ControlAppearance.Primary,
+            ButtonRightName       = "Details",
+            ButtonRightAppearance = ControlAppearance.Secondary,
+            Content               = Message,
+            Title                 = "Error",
+        };
+        MBox.ButtonLeftClick += ( _, _ ) => MBox.Close();
+        MBox.ButtonRightClick += ( _, _ ) => {
+            MBox.Content         = Details;
+            MBox.ButtonRightName = "Copy";
+            MBox.ButtonRightClick += ( _, _ ) => {
+                Clipboard.SetText(Details);
+                MBox.Close();
+            };
+        };
+        MBox.ShowDialog();
     }
 
     public static void ShowUpdateAvailable( ScannedRelease Release ) {
         void Callback() {
-            MessageBox MBox = new MessageBox {
+            MessageBox MBox = new() {
                 ButtonLeftName        = "Yes",
                 ButtonLeftAppearance  = ControlAppearance.Primary,
                 ButtonRightName       = "No",

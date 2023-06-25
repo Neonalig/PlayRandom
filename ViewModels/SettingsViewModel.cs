@@ -1,4 +1,5 @@
 ﻿using PlayRandom.Models;
+using PlayRandom.Views.Windows;
 
 namespace PlayRandom.ViewModels;
 
@@ -38,22 +39,34 @@ public sealed class SettingsViewModel : ViewModel {
 
         SaveCommand = new AsyncRelayCommand(Save, CanSave);
         async Task Save( CancellationToken Token ) {
-            await Settings.SaveAsync(Token);
-            LoadFromSettings();
+            try {
+                await Settings.SaveAsync(Token);
+                LoadFromSettings();
+            } catch (Exception Ex) {
+                MainWindow.HandleException(Ex);
+            }
         }
         bool CanSave() => Settings.HasUnsavedChanges;
 
         RevertCommand = new AsyncRelayCommand(Revert, CanRevert);
         async Task Revert( CancellationToken Token ) {
-            await Settings.RevertAsync(Token);
-            LoadFromSettings();
+            try {
+                await Settings.RevertAsync(Token);
+                LoadFromSettings();
+            } catch (Exception Ex) {
+                MainWindow.HandleException(Ex);
+            }
         }
         bool CanRevert() => Settings.HasUnsavedChanges;
 
         ResetCommand = new AsyncRelayCommand(Reset, CanReset);
         async Task Reset( CancellationToken Token ) {
-            await Settings.ClearAsync(Token);
-            LoadFromSettings();
+            try {
+                await Settings.ClearAsync(Token);
+                LoadFromSettings();
+            } catch (Exception Ex) {
+                MainWindow.HandleException(Ex);
+            }
         }
         bool CanReset() => Settings.Any;
     }

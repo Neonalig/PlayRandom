@@ -27,24 +27,6 @@ public static class TaskExtensions {
         Task.ContinueWith(ContinuationFunction, CancellationToken.None);
     }
 
-    /// <summary> Begins the task. </summary>
-    /// <param name="Task"> The task. </param>
-    /// <param name="Owner"> The owner window. If an exception occurs, the exception will be displayed in a message box with this window as its parent. </param>
-    /// <param name="Action"> The optional action to perform when the task completes. </param>
-    public static void Forget( this Task Task, Window Owner, Action? Action = null ) {
-        void ExceptionHandler( AggregateException Exception ) => MainWindow.HandleException(Owner, Exception);
-        Task.Forget(Action, ExceptionHandler);
-    }
-
-    /// <summary> Begins the task. </summary>
-    /// <param name="Task"> The task. </param>
-    /// <param name="Owner"> The owner dependency object. If an exception occurs, the exception will be displayed in a message box with this object's window as its parent. </param>
-    /// <param name="Action"> The optional action to perform when the task completes. </param>
-    public static void Forget( this Task Task, DependencyObject Owner, Action? Action = null ) {
-        void ExceptionHandler( AggregateException Exception ) => MainWindow.HandleException(Window.GetWindow(Owner), Exception);
-        Task.Forget(Action, ExceptionHandler);
-    }
-
     // ContinueWith discards any exceptions making the resultant task appear to be successful. The below extensions handle exceptions properly.
 
     sealed class ContinueWithException : Exception {
@@ -75,5 +57,40 @@ public static class TaskExtensions {
         Task.ContinueWith(ContinuationFunction);
         return TaskCompletionSource.Task;
     }
+
+    /// <summary> Appends the given exception handler to the task. </summary>
+    /// <param name="Task"> The task. </param>
+    /// <param name="ExceptionHandler"> The exception handler. </param>
+    /// <returns> The task. </returns>
+    public static Task WithExceptionHandler( this Task Task, Action<AggregateException> ExceptionHandler ) {
+        TaskCompletionSource TaskCompletionSource = new();
+
+        void ContinuationFunction( Task _ ) {
+            if (Task.IsFaulted) {
+                ExceptionHandler.Invoke(Task.Exception);
+            } else if (Task.IsCanceled) {
+                TaskCompletionSource.SetCanceled();
+            } else {
+                TaskCompletionSource.SetResult();
+            }
+        }
+
+        Task.ContinueWith(ContinuationFunction, CancellationToken.None);
+        return TaskCompletionSource.Task;
+    }
+
+    /// <inheritdoc cref="WithExceptionHandler(Task, Action{AggregateException})"/>
+    public static Func<Task> WithExceptionHandler( this Func<Task> Task, Action<AggregateException> ExceptionHandler ) {
+        Task Handler() => Task.Invoke().WithExceptionHandler(ExceptionHandler);
+        return Handler;
+    }
+
+    /// <summary> Appends the main window's exception handler to the task. </summary>
+    /// <param name="Task"> The task. </param>
+    /// <returns> The task. </returns>
+    public static Task WithExceptionHandler( this Task Task ) => Task.WithExceptionHandler(MainWindow.HandleException);
+
+    /// <inheritdoc cref="WithExceptionHandler(Task)"/>
+    public static Func<Task> WithExceptionHandler( this Func<Task> Task ) => Task.WithExceptionHandler(MainWindow.HandleException);
 
 }
