@@ -1,6 +1,4 @@
-﻿using System.Globalization;
-
-namespace PlayRandom.Converters;
+﻿namespace PlayRandom.Converters;
 
 [ValueConversion(typeof(string), typeof(Visibility))]
 public sealed class StringToVisibilityConverter : ValueConverter<string, Visibility> {
@@ -35,7 +33,7 @@ public sealed class StringToVisibilityConverter : ValueConverter<string, Visibil
     #region Overrides of ValueConverter<string,Visibility>
 
     /// <inheritdoc />
-    protected override Visibility Convert( string Value, object? Parameter, CultureInfo Culture ) {
+    public override Visibility Convert( string Value, object? Parameter, CultureInfo Culture ) {
         if (string.IsNullOrEmpty(Value) || (IncludeWhitespace && string.IsNullOrWhiteSpace(Value))) {
             return Empty;
         }

@@ -16,4 +16,12 @@ public readonly record struct MusicFolder( DirectoryInfo Folder ) {
 
     public static implicit operator DirectoryInfo( MusicFolder Folder ) => Folder.Folder;
     public static implicit operator MusicFolder( DirectoryInfo Folder ) => new( Folder );
+
+    #region Overrides of ValueType
+
+    /// <inheritdoc />
+    public override string ToString() => Folder.ToString();
+
+    #endregion
+
 }

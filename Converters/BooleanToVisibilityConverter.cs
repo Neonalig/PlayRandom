@@ -1,6 +1,4 @@
-﻿using System.Globalization;
-
-namespace PlayRandom.Converters;
+﻿namespace PlayRandom.Converters;
 
 [ValueConversion(typeof(bool), typeof(Visibility))]
 public sealed class BooleanToVisibilityConverter : ValueConverter<bool, Visibility> {
@@ -26,10 +24,10 @@ public sealed class BooleanToVisibilityConverter : ValueConverter<bool, Visibili
     #region Overrides of ValueConverter<bool,Visibility>
 
     /// <inheritdoc />
-    protected override Visibility Convert( bool Value, object? Parameter, CultureInfo Culture ) => Value ? True : False;
+    public override Visibility Convert( bool Value, object? Parameter, CultureInfo Culture ) => Value ? True : False;
 
     /// <inheritdoc />
-    protected override bool ConvertBack( Visibility Value, object? Parameter, CultureInfo Culture ) => Value == True;
+    public override bool ConvertBack( Visibility Value, object? Parameter, CultureInfo Culture ) => Value == True;
 
     #endregion
 

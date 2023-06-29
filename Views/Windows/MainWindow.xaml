@@ -13,7 +13,6 @@
     WindowCornerPreference="Round"
     WindowStartupLocation="CenterScreen"
     Icon="{StaticResource IconDrawingImage}"
-    Closing="MainWindow_OnClosing"
     Title="PlayRandom">
     <ui:UiWindow.DataContext>
         <viewModels:MainViewModel/>
@@ -90,17 +89,22 @@
             Grid.Row="0">
             <ui:TitleBar.Tray>
                 <ui:NotifyIcon
+                    x:Name="TrayIcon"
                     FocusOnLeftClick="True"
                     MenuOnRightClick="True"
                     TooltipText="Play Random"
                     Icon="{StaticResource IconDrawingImage}">
                     <ui:NotifyIcon.Menu>
-                        <ContextMenu>
+                        <ContextMenu x:Name="NotifyIconMenu">
                             <!-- ReSharper disable Xaml.RedundantResource -->
                             <ui:MenuItem
                                 Header="Home"
                                 SymbolIcon="Library28"
                                 Tag="home" />
+                            <ui:MenuItem
+                                Header="Always on Top"
+                                SymbolIcon="Empty"
+                                Tag="always-on-top" />
                             <!-- ReSharper restore Xaml.RedundantResource -->
                         </ContextMenu>
                     </ui:NotifyIcon.Menu>

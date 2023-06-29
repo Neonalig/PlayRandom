@@ -6,7 +6,7 @@ public sealed class PlaybackPerformanceService : IPlaybackPerformanceService {
 
     /// <inheritdoc />
     public OneOf<Success, Exception> Open( PlaybackOption Option ) {
-        OneOf<Success, Exception> Result = Option.TryPickT0(out PlaylistFile File, out MusicFolder Folder)
+        OneOf<Success, Exception> Result = Option.TryGetFile(out PlaylistFile? File, out MusicFolder? Folder)
             ? Settings.Executable.Launch(File)
             : Settings.Executable.Launch(Folder);
         if (Result.IsT0) {

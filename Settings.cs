@@ -1,4 +1,5 @@
 ﻿using PlayRandom.Models;
+using PlayRandom.Views.Windows;
 
 namespace PlayRandom;
 
@@ -158,7 +159,7 @@ public static class Settings {
     /// <param name="Token"> The cancellation token. </param>
     /// <returns> The asynchronous operation. </returns>
     public static async Task SaveAsync( CancellationToken Token = default ) {
-        await using FileStream Stream = File.OpenWrite(_FilePath);
+        await using FileStream Stream = new(_FilePath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, FileOptions.Asynchronous);
         await JsonSerializer.SerializeAsync(Stream, _Settings, cancellationToken: Token, options: _Options);
         HasUnsavedChanges = false;
     }
@@ -234,6 +235,42 @@ public static class Settings {
         get => _LastSearchPath.Get();
         set => _LastSearchPath.Set(value);
     }
+
+    /// <summary> Gets or sets whether to start with the operating system. </summary>
+    public static bool StartWithOS {
+        get => Startup.Get();
+        set {
+            if (value == Startup.Get()) { return; }
+            Startup.Set(value);
+        }
+    }
+
+    static readonly Setting<bool> _MinimiseToTray = new(nameof(MinimiseToTray), false);
+    /// <summary> Gets or sets whether to minimise to the system tray. </summary>
+    public static bool MinimiseToTray {
+        get => _MinimiseToTray.Get();
+        set => _MinimiseToTray.Set(value);
+    }
+
+    static readonly Setting<bool> _CloseToTray = new(nameof(CloseToTray), false);
+    /// <summary> Gets or sets whether to close to the system tray. </summary>
+    public static bool CloseToTray {
+        get => _CloseToTray.Get();
+        set => _CloseToTray.Set(value);
+    }
+
+    static readonly Setting<bool> _AlwaysOnTop = new(nameof(AlwaysOnTop), false);
+    /// <summary> Gets or sets whether the window should always be on top. </summary>
+    public static bool AlwaysOnTop {
+        get => _AlwaysOnTop.Get();
+        set {
+            _AlwaysOnTop.Set(value);
+            if (Application.Current.MainWindow is MainWindow MW) {
+                MW.Topmost = value;
+            }
+        }
+    }
+
     #endregion
 
     public delegate void SettingChangedEventHandler( string Name, object Value );

@@ -17,4 +17,11 @@ public readonly record struct PlaylistFile( FileInfo File ) {
     public static implicit operator FileInfo( PlaylistFile File ) => File.File;
     public static implicit operator PlaylistFile( FileInfo File ) => new( File );
 
+    #region Overrides of ValueType
+
+    /// <inheritdoc />
+    public override string ToString() => File.ToString();
+
+    #endregion
+
 }

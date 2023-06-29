@@ -18,9 +18,123 @@ public partial class MainWindow {
                 true                 // Whether to change accents automatically
             );
         }
+
+        Topmost = AlwaysOnTopMenuItemChecked = ViewModel.AlwaysOnTop;
+
+        ViewModel.PropertyChanged += OnViewModelPropertyChanged;
     }
 
-    void MainWindow_OnClosing( object? Sender, CancelEventArgs E ) {
+    MenuItem AlwaysOnTopMenuItem {
+        get {
+            foreach (object? Item in NotifyIconMenu.Items) {
+                if (Item is MenuItem { Tag: "always-on-top" } MenuItem) {
+                    return MenuItem;
+                }
+            }
+            throw new InvalidOperationException("Could not find the always-on-top menu item.");
+        }
+    }
+
+    bool AlwaysOnTopMenuItemChecked {
+        get => AlwaysOnTopMenuItem.SymbolIcon == SymbolRegular.Checkmark28;
+        set => AlwaysOnTopMenuItem.SymbolIcon = value ? SymbolRegular.Checkmark28 : SymbolRegular.Empty;
+    }
+
+    PipeServer? _PipeServer;
+    Task?       _PipeServerTask;
+
+    public readonly struct PipeServer {
+        public readonly NamedPipeServerStream   Stream;
+        public readonly CancellationTokenSource Cancellation;
+
+        public PipeServer( NamedPipeServerStream Stream, CancellationTokenSource Cancellation ) {
+            this.Stream       = Stream;
+            this.Cancellation = Cancellation;
+        }
+
+        public void Deconstruct( out NamedPipeServerStream Stream, out CancellationTokenSource Cancellation ) {
+            Stream       = this.Stream;
+            Cancellation = this.Cancellation;
+        }
+    }
+
+    void StartNamedPipeServer() {
+        CancellationTokenSource Cancellation = new();
+        async Task RunServer() {
+            await using NamedPipeServerStream Server = new(Messages.LocalPipe, PipeDirection.In);
+            while (true) {
+                if (Cancellation.IsCancellationRequested) {
+                    return;
+                }
+
+                await Server.WaitForConnectionAsync(Cancellation.Token);
+
+                using StreamReader Reader  = new(Server);
+                string?            Message = await Reader.ReadLineAsync(Cancellation.Token);
+
+                switch (Message) {
+                    case Messages.BringToFront:
+                        void BringToFront() {
+                            Show();
+                            WindowState = WindowState.Normal;
+                            Activate();
+                        }
+                        await Application.Current.Dispatcher.InvokeAsync(BringToFront);
+                        break;
+                }
+
+                Server.Disconnect();
+            }
+        }
+        _PipeServerTask = Task.Run(RunServer, Cancellation.Token);
+    }
+
+
+    /// <summary> Gets the view model. </summary>
+    MainViewModel ViewModel => (MainViewModel)DataContext;
+
+    void OnViewModelPropertyChanged( object? Sender, PropertyChangedEventArgs E ) {
+        // ReSharper disable once ConvertSwitchStatementToSwitchExpression
+        switch (E.PropertyName) {
+            case nameof(MainViewModel.AlwaysOnTop):
+                Topmost = AlwaysOnTopMenuItemChecked = ViewModel.AlwaysOnTop;
+                break;
+        }
+    }
+
+    #region Overrides of Window
+
+    /// <inheritdoc />
+    protected override void OnStateChanged( EventArgs E ) {
+        base.OnStateChanged(E);
+
+        if (WindowState == WindowState.Minimized && Settings.MinimiseToTray) {
+            // E.Handled = true; // Doesn't exist. :(
+            WindowState = WindowState.Normal;
+            MinimiseToTray();
+        }
+    }
+
+    /// <inheritdoc />
+    protected override void OnClosing( CancelEventArgs E ) {
+        base.OnClosing(E);
+
+        if (!E.Cancel && Settings.CloseToTray) {
+            E.Cancel = true;
+            MinimiseToTray();
+        }
+
+        // Cleanup and dispose of the named pipe server
+        if (_PipeServer is { } PS) {
+            PS.Cancellation.Cancel();
+            if (_PipeServerTask is { } Task) {
+                Task.Wait();
+            }
+            _PipeServerTask = null;
+            PS.Stream.Dispose();
+        }
+        _PipeServer = null;
+
         // Prompt to save if there are any pending changes
         if (!Settings.HasUnsavedChanges) { return; }
         MessageBox MBox = new() {
@@ -40,6 +154,13 @@ public partial class MainWindow {
         };
         MBox.ShowDialog();
     }
+
+    void MinimiseToTray() {
+        Hide();
+        TrayIcon.Visibility = Visibility.Visible;
+    }
+
+    #endregion
 
     /// <summary> Catches an exception and displays it in a message box. </summary>
     /// <param name="Exception"> The exception. </param>

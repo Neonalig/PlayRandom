@@ -2,7 +2,7 @@
 
 public abstract class ViewModel : NotifyPropertyChanged { }
 
-public abstract class NotifyPropertyChanged : INotifyPropertyChanged {
+public abstract class NotifyPropertyChanged : DependencyObject, INotifyPropertyChanged {
 
     #region Implementation of INotifyPropertyChanged
 

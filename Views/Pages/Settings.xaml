@@ -28,7 +28,7 @@
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
-        <Grid VerticalAlignment="Top" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4">
+        <ScrollViewer VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
             <StackPanel Orientation="Vertical" Width="600">
                 <TextBlock Text="Music Player" FontSize="20" FontWeight="Bold" Margin="0,0,0,5" ToolTip="The music player to use when playing music" Width="{StaticResource LabelWidth}" HorizontalAlignment="Left"/>
                 <controls:ExecutableLauncherEditor ExecutableLauncher="{Binding DataContext.Executable, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=ui:UiPage}}" LabelWidth="{StaticResource LabelWidth}" Height="150"/>
@@ -40,8 +40,22 @@
                 <controls:PrefixLabel Text="Default search path" ToolTip="The default search path to use when searching for music" LabelWidth="{StaticResource LabelWidth}">
                     <controls:FolderPicker SelectedPath="{Binding DataContext.LastSearchPath, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=ui:UiPage}}"/>
                 </controls:PrefixLabel>
+
+                <TextBlock Text="Application" FontSize="20" FontWeight="Bold" Margin="0,10,0,5" ToolTip="Settings related to the application" Width="{StaticResource LabelWidth}" HorizontalAlignment="Left"/>
+                <controls:PrefixLabel Text="Start with Windows" LabelWidth="{StaticResource LabelWidth}" Margin="0,0,0,5" ToolTip="{x:Static viewModels:SettingsViewModel.StartWithOSTooltip}">
+                    <ui:ToggleSwitch IsChecked="{Binding DataContext.StartWithOS, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=ui:UiPage}}"/>
+                </controls:PrefixLabel>
+                <controls:PrefixLabel Text="Minimise to tray" ToolTip="Whether to minimise the application to the system tray" LabelWidth="{StaticResource LabelWidth}" Margin="0,0,0,5">
+                    <ui:ToggleSwitch IsChecked="{Binding DataContext.MinimiseToTray, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=ui:UiPage}}"/>
+                </controls:PrefixLabel>
+                <controls:PrefixLabel Text="Close to tray" ToolTip="Whether to close the application to the system tray" LabelWidth="{StaticResource LabelWidth}" Margin="0,0,0,5">
+                    <ui:ToggleSwitch IsChecked="{Binding DataContext.CloseToTray, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=ui:UiPage}}"/>
+                </controls:PrefixLabel>
+                <controls:PrefixLabel Text="Always on top" ToolTip="Whether to keep the application on top of other windows" LabelWidth="{StaticResource LabelWidth}" Margin="0,0,0,5">
+                    <ui:ToggleSwitch IsChecked="{Binding DataContext.AlwaysOnTop, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=ui:UiPage}}"/>
+                </controls:PrefixLabel>
             </StackPanel>
-        </Grid>
+        </ScrollViewer>
         <ui:Button Grid.Row="1" Grid.Column="0" Command="{Binding ResetCommand}" ToolTip="Reset values to system defaults" Width="{StaticResource ButtonWidth}">
             <ui:Button.Content>
                 <StackPanel Orientation="Vertical">

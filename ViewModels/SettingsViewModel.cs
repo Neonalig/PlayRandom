@@ -1,4 +1,5 @@
-﻿using PlayRandom.Models;
+﻿using PlayRandom.Converters;
+using PlayRandom.Models;
 using PlayRandom.Views.Windows;
 
 namespace PlayRandom.ViewModels;
@@ -22,6 +23,18 @@ public sealed class SettingsViewModel : ViewModel {
                     break;
                 case nameof(LastSearchPath):
                     Settings.LastSearchPath = VM.LastSearchPath;
+                    break;
+                case nameof(StartWithOS):
+                    Settings.StartWithOS = VM.StartWithOS;
+                    break;
+                case nameof(MinimiseToTray):
+                    Settings.MinimiseToTray = VM.MinimiseToTray;
+                    break;
+                case nameof(CloseToTray):
+                    Settings.CloseToTray = VM.CloseToTray;
+                    break;
+                case nameof(AlwaysOnTop):
+                    Settings.AlwaysOnTop = VM.AlwaysOnTop;
                     break;
                 case nameof(IsModified):
                     ((AsyncRelayCommand)VM.SaveCommand).NotifyCanExecuteChanged();
@@ -76,6 +89,10 @@ public sealed class SettingsViewModel : ViewModel {
         Executable                = Settings.Executable;
         OfferToRememberSearchPath = Settings.OfferToRememberSearchPath;
         LastSearchPath            = Settings.LastSearchPath;
+        StartWithOS               = Settings.StartWithOS;
+        MinimiseToTray            = Settings.MinimiseToTray;
+        CloseToTray               = Settings.CloseToTray;
+        AlwaysOnTop               = Settings.AlwaysOnTop;
         OnPropertyChanged(nameof(IsModified));
     }
 
@@ -88,6 +105,23 @@ public sealed class SettingsViewModel : ViewModel {
     /// <summary> Gets or sets the default search path. </summary>
     public string LastSearchPath { get; set; }
 
+    /// <summary> Gets or sets whether to start with the operating system. </summary>
+    public bool StartWithOS { get; set; }
+
+    /// <summary> Gets or sets whether to minimise to the system tray. </summary>
+    public bool MinimiseToTray { get; set; }
+
+    /// <summary> Gets or sets whether to minimise to the system tray when the window is closed. </summary>
+    public bool CloseToTray { get; set; }
+
+    /// <summary> Gets or sets whether to stay topmost. </summary>
+    public bool AlwaysOnTop { get; set; }
+
+    /// <summary> Gets the platform identifier. </summary>
+    #pragma warning disable CA1822
+    public PlatformID Platform => Environment.OSVersion.Platform;
+    #pragma warning restore CA1822
+
     /// <summary> Gets the command to save the settings. </summary>
     public ICommand SaveCommand { get; }
 
@@ -98,5 +132,10 @@ public sealed class SettingsViewModel : ViewModel {
     public ICommand ResetCommand { get; }
 
     /// <summary> Gets whether the settings have been modified. </summary>
+    #pragma warning disable CA1822
     public bool IsModified => Settings.HasUnsavedChanges;
+    #pragma warning restore CA1822
+
+    /// <summary> The tooltip for the <see cref="StartWithOS"/> property. </summary>
+    public static string StartWithOSTooltip { get; } = $"Whether to start with {PlatformToStringConverter.String}";
 }

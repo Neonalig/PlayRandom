@@ -128,4 +128,24 @@ public static class FileSystemInfoExtensions {
 
         return new(PathRoot);
     }
+
+    /// <summary> Adds quotes around the path if required. </summary>
+    /// <param name="Path"> The path to quote. </param>
+    /// <returns> The quoted path. </returns>
+    [Pure]
+    public static string Quote( this string Path ) {
+        if (string.IsNullOrWhiteSpace(Path)) {
+            return "\"\"";
+        }
+
+        if (Path.StartsWith('\"') && Path.EndsWith('\"')) {
+            return Path;
+        }
+
+        if (Path.Contains(' ')) {
+            return $"\"{Path}\"";
+        }
+
+        return Path;
+    }
 }

@@ -6,7 +6,7 @@ public sealed class PlaybackOptionService : IPlaybackOptionService {
     public async IAsyncEnumerable<PlaybackOption> GetPlaybackOptionsAsync( DirectoryInfo Directory, [EnumeratorCancellation] CancellationToken Token = default ) {
         bool Any = false;
         await foreach (FileInfo File in Directory.EnumerateFilesAsync("*.*", SearchOption.AllDirectories, Token)) {
-            foreach (PlaylistFormat Format in PlaylistFormat.List) {
+            foreach (PlaylistFormat Format in PlaylistFormat.Values) {
                 if (File.Extension.ToLower() == Format.Extension) {
                     Any = true;
                     yield return File;

@@ -51,13 +51,9 @@ public sealed class DashboardViewModel : ViewModel {
         void Shuffle() {
             PlaybackOptions.Shuffle();
         }
-        bool CanShuffle() {
-            Debug.WriteLine($"CanShuffle: {(PlaybackOptions.Count > 1)}");
-            return PlaybackOptions.Count > 1;
-        }
+        bool CanShuffle() => PlaybackOptions.Count > 1;
 
-        // If there is a search path in the command line arguments, use that. Otherwise, use the last search path.
-        SearchPath = Environment.GetCommandLineArgs().Skip(1).FirstOrDefault() ?? Settings.LastSearchPath;
+        SearchPath = Settings.LastSearchPath;
         LoadPlaybackOptionsAsync().Forget();
 
         PropertyChanged += PropertyChangedCallback;

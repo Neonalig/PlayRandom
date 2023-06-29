@@ -1,6 +1,4 @@
-﻿using System.Globalization;
-
-namespace PlayRandom.Converters;
+﻿namespace PlayRandom.Converters;
 
 [ValueConversion(typeof(string), typeof(bool))]
 public sealed class UniqueStringToBooleanConverter : ValueConverter<string, bool>, IMultiValueConverter {
@@ -17,7 +15,7 @@ public sealed class UniqueStringToBooleanConverter : ValueConverter<string, bool
     #region Overrides of ValueConverter<string,Visibility>
 
     /// <inheritdoc />
-    protected override bool Convert( string Value, object? Parameter, CultureInfo Culture ) => string.Equals(Value, Parameter as string, Comparison);
+    public override bool Convert( string Value, object? Parameter, CultureInfo Culture ) => string.Equals(Value, Parameter as string, Comparison);
 
     #endregion
 
