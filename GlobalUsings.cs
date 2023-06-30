@@ -35,6 +35,7 @@ global using Clipboard = Wpf.Ui.Common.Clipboard;
 global using FileMode = System.IO.FileMode;
 global using MenuItem = Wpf.Ui.Controls.MenuItem;
 global using MessageBox = Wpf.Ui.Controls.MessageBox;
+global using Page = System.Windows.Controls.Page;
 global using Path = System.IO.Path;
 global using RelayCommand = CommunityToolkit.Mvvm.Input.RelayCommand;
 global using WindowsMessageBox = System.Windows.MessageBox;

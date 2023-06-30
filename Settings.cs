@@ -271,6 +271,13 @@ public static class Settings {
         }
     }
 
+    static readonly Setting<bool> _UseMediaKeys = new(nameof(UseMediaKeys), true);
+    /// <summary> Gets or sets whether to use media keys for shuffling and playing. </summary>
+    public static bool UseMediaKeys {
+        get => _UseMediaKeys.Get();
+        set => _UseMediaKeys.Set(value);
+    }
+
     #endregion
 
     public delegate void SettingChangedEventHandler( string Name, object Value );

@@ -36,6 +36,9 @@ public sealed class SettingsViewModel : ViewModel {
                 case nameof(AlwaysOnTop):
                     Settings.AlwaysOnTop = VM.AlwaysOnTop;
                     break;
+                case nameof(UseMediaKeys):
+                    Settings.UseMediaKeys = VM.UseMediaKeys;
+                    break;
                 case nameof(IsModified):
                     ((AsyncRelayCommand)VM.SaveCommand).NotifyCanExecuteChanged();
                     ((AsyncRelayCommand)VM.RevertCommand).NotifyCanExecuteChanged();
@@ -93,6 +96,7 @@ public sealed class SettingsViewModel : ViewModel {
         MinimiseToTray            = Settings.MinimiseToTray;
         CloseToTray               = Settings.CloseToTray;
         AlwaysOnTop               = Settings.AlwaysOnTop;
+        UseMediaKeys              = Settings.UseMediaKeys;
         OnPropertyChanged(nameof(IsModified));
     }
 
@@ -116,6 +120,9 @@ public sealed class SettingsViewModel : ViewModel {
 
     /// <summary> Gets or sets whether to stay topmost. </summary>
     public bool AlwaysOnTop { get; set; }
+
+    /// <summary> Gets or sets whether to use media keys for navigation. </summary>
+    public bool UseMediaKeys { get; set; }
 
     /// <summary> Gets the platform identifier. </summary>
     #pragma warning disable CA1822

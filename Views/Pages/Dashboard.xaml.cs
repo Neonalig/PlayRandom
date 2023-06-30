@@ -1,8 +1,8 @@
-﻿using PlayRandom.ViewModels;
+using PlayRandom.ViewModels;
 
 namespace PlayRandom.Views.Pages;
 
-public partial class Dashboard {
+public partial class Dashboard : IInputReceiver {
     public Dashboard() {
         InitializeComponent();
     }
@@ -34,4 +34,26 @@ public partial class Dashboard {
         int Index = ListBox.ItemContainerGenerator.IndexFromContainer(Item);
         ViewModel.PlaybackCommand.Execute(Index);
     }
+
+    #region Implementation of IInputReceiver
+
+    /// <inheritdoc />
+    public void OnKeyReceived( object Sender, KeyEventArgs E ) {
+        Debug.WriteLine($"Key down: {E.Key}");
+        if (!PlayRandom.Settings.UseMediaKeys) { return; }
+        switch (E.Key) {
+            case Key.MediaPlayPause:
+                ViewModel.PlayFirstCommand.Execute(null);
+                E.Handled = true;
+                break;
+            case Key.MediaNextTrack:
+            case Key.MediaPreviousTrack:
+                ViewModel.ShuffleCommand.Execute(null);
+                E.Handled = true;
+                break;
+        }
+    }
+
+    #endregion
+
 }

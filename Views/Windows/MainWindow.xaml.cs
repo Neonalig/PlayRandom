@@ -1,5 +1,6 @@
 ﻿using PlayRandom.Models;
 using PlayRandom.ViewModels;
+using PlayRandom.Views.Pages;
 
 namespace PlayRandom.Views.Windows;
 
@@ -143,7 +144,7 @@ public partial class MainWindow {
             ButtonRightName       = "No",
             ButtonRightAppearance = ControlAppearance.Secondary,
             Content               = "You have unsaved changes. Do you want to save them?",
-            Title                 = "Unsaved Changes",
+            Title                 = "Unsaved Changes"
         };
         MBox.ButtonLeftClick += ( _, _ ) => {
             Settings.Save();
@@ -202,7 +203,7 @@ public partial class MainWindow {
             ButtonRightName       = "Details",
             ButtonRightAppearance = ControlAppearance.Secondary,
             Content               = Message,
-            Title                 = "Error",
+            Title                 = "Error"
         };
         MBox.ButtonLeftClick += ( _, _ ) => MBox.Close();
         MBox.ButtonRightClick += ( _, _ ) => {
@@ -242,7 +243,7 @@ public partial class MainWindow {
                 ButtonLeftName        = "OK",
                 ButtonLeftAppearance  = ControlAppearance.Primary,
                 Content               = "You are running the latest version of " + nameof(PlayRandom) + ".",
-                Title                 = "No Update Available",
+                Title                 = "No Update Available"
             };
             MBox.ButtonLeftClick += ( _, _ ) => MBox.Close();
             MBox.ButtonRightClick += ( _, _ ) => MBox.Close();
@@ -250,4 +251,20 @@ public partial class MainWindow {
         }
         Application.Current.Dispatcher.Invoke(Release is not null ? Callback_Available : Callback_NotAvailable);
     }
+
+    #region Overrides of UIElement
+
+    /// <inheritdoc />
+    protected override void OnPreviewKeyDown( KeyEventArgs E ) {
+        // If there is a page active, pass the key event to it
+        if (RootFrame.Content is IInputReceiver Page) {
+            Page.OnKeyReceived(this, E);
+            if (E.Handled) { return; }
+        }
+
+        base.OnPreviewKeyDown(E);
+    }
+
+    #endregion
+
 }

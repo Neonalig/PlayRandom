@@ -3,7 +3,6 @@
            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-           xmlns:local="clr-namespace:PlayRandom.Views.Pages"
            xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
            xmlns:viewModels="clr-namespace:PlayRandom.ViewModels"
            xmlns:controls="clr-namespace:PlayRandom.Controls"
@@ -53,6 +52,29 @@
                 </controls:PrefixLabel>
                 <controls:PrefixLabel Text="Always on top" ToolTip="Whether to keep the application on top of other windows" LabelWidth="{StaticResource LabelWidth}" Margin="0,0,0,5">
                     <ui:ToggleSwitch IsChecked="{Binding DataContext.AlwaysOnTop, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=ui:UiPage}}"/>
+                </controls:PrefixLabel>
+
+                <TextBlock Text="Navigation" FontSize="20" FontWeight="Bold" Margin="0,10,0,5" ToolTip="Navigation controls configuration" Width="{StaticResource LabelWidth}" HorizontalAlignment="Left"/>
+                <controls:PrefixLabel Text="Use Media Keys" LabelWidth="{StaticResource LabelWidth}" Margin="0,0,0,5">
+                    <controls:PrefixLabel.ToolTip>
+                        <StackPanel Orientation="Vertical">
+                            <TextBlock Text="Whether to use media keys for navigation"/>
+                            <StackPanel Orientation="Horizontal">
+                                <ui:SymbolIcon Symbol="Previous24"/>
+                                <TextBlock Text=" / "/>
+                                <ui:SymbolIcon Symbol="Next24"/>
+                                <TextBlock Text=": Shuffle"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <!-- <ui:SymbolIcon Symbol="VideoPlayPause24"/> -->
+                                <ui:SymbolIcon Symbol="Play24"/>
+                                <TextBlock Text=" / "/>
+                                <ui:SymbolIcon Symbol="Pause24"/>
+                                <TextBlock Text=": Play first item"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </controls:PrefixLabel.ToolTip>
+                    <ui:ToggleSwitch IsChecked="{Binding DataContext.UseMediaKeys, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=ui:UiPage}}"/>
                 </controls:PrefixLabel>
             </StackPanel>
         </ScrollViewer>
