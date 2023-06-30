@@ -271,7 +271,7 @@ public static class Settings {
         }
     }
 
-    static readonly Setting<bool> _UseMediaKeys = new(nameof(UseMediaKeys), true);
+    static readonly Setting<bool> _UseMediaKeys = new(nameof(UseMediaKeys), false);
     /// <summary> Gets or sets whether to use media keys for shuffling and playing. </summary>
     public static bool UseMediaKeys {
         get => _UseMediaKeys.Get();
